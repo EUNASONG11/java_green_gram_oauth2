@@ -1,0 +1,11 @@
+mybatis:
+  mapper-locations: mappers/**/*.xml
+
+spring:
+  application:
+  name: GreenGramVer2
+
+  datasource:
+    url: jdbc:log4jdbc:mariadb://localhost/greengram_ver2
+    username: root
+    password: green502
