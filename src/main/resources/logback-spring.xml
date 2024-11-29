@@ -29,6 +29,14 @@
         </encoder>
     </appender>
 
+    <logger name="jdbc" level="OFF"/>
+    <logger name="jdbc.sqlonly" level="OFF"/>
+    <logger name="jdbc.sqltiming" level="DEBUG"/>
+    <logger name="jdbc.audit" level="OFF"/>
+    <logger name="jdbc.resultset" level="OFF"/>
+    <logger name="jdbc.resultsettable" level="DEBUG"/>
+    <logger name="jdbc.connection" level="OFF"/>
+
     <!-- TRACE > DEBUG > INFO > WARN > ERROR -->
     <!-- level="INFO"는 INFO, WARN, ERROR 로그만 파일로 만들어지고 콘솔에 찍히게 된다. -->
     <root level="INFO">

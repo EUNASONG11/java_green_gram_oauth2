@@ -7,6 +7,7 @@ import com.green.greengramver2.feed.model.FeedPostRes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -21,6 +22,7 @@ public class FeedService {
     private final FeedPicsMapper feedPicsMapper;
     private final MyFileUtils myFileUtils;
 
+    @Transactional
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
         int result = mapper.insFeed(p);
         //-------------- 파일 등록
@@ -46,6 +48,12 @@ public class FeedService {
         FeedPicDto feedPicDto = new FeedPicDto();
         feedPicDto.setFeedId(feedId);
         feedPicDto.setPics(picNameList);
-        return null;
+
+        int resultPis = feedPicsMapper.insFeedPics(feedPicDto);
+
+        return FeedPostRes.builder()
+                          .feedId(feedId)
+                          .pics(picNameList)
+                          .build();
     }
 }
