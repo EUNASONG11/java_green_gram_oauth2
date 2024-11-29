@@ -1,6 +1,5 @@
 package com.green.greengramver2.user;
 
-import com.green.greengramver2.user.model.UserSignInReq;
 import com.green.greengramver2.user.model.UserSignInRes;
 import com.green.greengramver2.user.model.UserSignUpReq;
 import org.apache.ibatis.annotations.Mapper;
