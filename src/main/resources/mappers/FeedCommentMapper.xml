@@ -12,11 +12,13 @@
 
     <select id="selFeedCommentList">
         SELECT B.user_id AS writerUserId, B.pic AS writerPic, A.comment,
-               B.if(B.nick_name IS NULL, B.uid, B.nick_name) AS writerNm,
+               if(B.nick_name IS NULL, B.uid, B.nick_name) AS writerNm,
                A.feed_comment_id AS feedCommentId
           FROM feed_comments A
          INNER JOIN user B
             ON A.user_id = B.user_id
-         ORDER BY A.feed_id DESC
+         WHERE A.feed_id = #{feedId}
+         ORDER BY A.feed_comment_id DESC
+         LIMIT #{startIdx}, #{size}
     </select>
 </mapper>

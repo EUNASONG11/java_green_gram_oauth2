@@ -75,6 +75,15 @@ public class FeedService {
             commentGetReq.setFeedId(res.getFeedId());
 
             List<FeedCommentDto> commentList = feedCommentMapper.selFeedCommentList(commentGetReq);
+
+            FeedCommentGetRes commentGetRes = new FeedCommentGetRes();
+            commentGetRes.setCommentList(commentList);
+            commentGetRes.setMoreComment(commentList.size() == 4);//4개면 true, 4개 아니면 false
+
+            if (commentGetRes.isMoreComment()) {
+                commentList.remove(commentList.size() - 1);
+            }
+            res.setComment(commentGetRes);
         }
         return list;
     }

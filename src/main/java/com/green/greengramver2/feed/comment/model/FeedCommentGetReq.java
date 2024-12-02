@@ -22,7 +22,8 @@ public class FeedCommentGetReq{
         if (page < 1) {return;}
         if (page == 1) {
             startIdx = 0;
-            size = FIRST_COMMENT_SIZE + 1; //+1은 isMore 처리용
+            size = FIRST_COMMENT_SIZE + 1;//+1은 isMore 처리용
+            return;
         }
         startIdx = ((page - 2) * DEFAULT_PAGE_SIZE) + FIRST_COMMENT_SIZE;
         size = DEFAULT_PAGE_SIZE + 1; //+1은 isMore 처리용
