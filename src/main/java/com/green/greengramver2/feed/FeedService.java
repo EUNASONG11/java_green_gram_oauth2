@@ -1,6 +1,10 @@
 package com.green.greengramver2.feed;
 
 import com.green.greengramver2.common.MyFileUtils;
+import com.green.greengramver2.feed.comment.FeedCommentMapper;
+import com.green.greengramver2.feed.comment.model.FeedCommentDto;
+import com.green.greengramver2.feed.comment.model.FeedCommentGetReq;
+import com.green.greengramver2.feed.comment.model.FeedCommentGetRes;
 import com.green.greengramver2.feed.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,7 +23,9 @@ import java.util.List;
 public class FeedService {
     private final FeedMapper mapper;
     private final FeedPicsMapper feedPicsMapper;
+    private final FeedCommentMapper commentMapper;
     private final MyFileUtils myFileUtils;
+    private final FeedCommentMapper feedCommentMapper;
 
     @Transactional
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
@@ -59,8 +65,16 @@ public class FeedService {
         List<FeedGetRes> list = mapper.selFeedList(p);
 
         for (FeedGetRes res : list) {
+            //피드 당 사진 리스트
             List<String> pics = feedPicsMapper.selFeedPics(res.getFeedId());
             res.setPics(pics);
+
+            //피드당 댓글 4개
+            FeedCommentGetReq commentGetReq = new FeedCommentGetReq();
+            commentGetReq.setPage(1);
+            commentGetReq.setFeedId(res.getFeedId());
+
+            List<FeedCommentDto> commentList = feedCommentMapper.selFeedCommentList(commentGetReq);
         }
         return list;
     }

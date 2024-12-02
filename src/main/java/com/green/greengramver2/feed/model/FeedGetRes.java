@@ -1,5 +1,6 @@
 package com.green.greengramver2.feed.model;
 
+import com.green.greengramver2.feed.comment.model.FeedCommentGetRes;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,4 +20,6 @@ public class FeedGetRes {
     private int isLike;
 
     private List<String> pics = new ArrayList<>();
+
+    private FeedCommentGetRes comment;
 }
