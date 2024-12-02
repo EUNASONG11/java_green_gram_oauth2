@@ -11,7 +11,7 @@ import java.beans.ConstructorProperties;
 
 @Slf4j
 @Getter
-@ToString(callSuper = true)
+@ToString(callSuper = true) //부모 클래스의 필드들도 포함해서 toString() 메소드를 생성
 public class FeedGetReq extends Paging {
     @Schema(title="로그인 유저 PK", name="signed_user_id", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private long signedUserId;
