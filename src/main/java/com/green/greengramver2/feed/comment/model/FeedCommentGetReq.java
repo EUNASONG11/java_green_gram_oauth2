@@ -1,6 +1,5 @@
 package com.green.greengramver2.feed.comment.model;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.green.greengramver2.common.Constants;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.Getter;
@@ -16,7 +15,7 @@ import java.beans.ConstructorProperties;
 @ToString
 public class FeedCommentGetReq{
     private final static int FIRST_COMMENT_SIZE = 3;
-    private final static int DEFAULT_PAGE_SIZE = 20;
+
     @Schema(title="피드 PK", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private long feedId;
 
