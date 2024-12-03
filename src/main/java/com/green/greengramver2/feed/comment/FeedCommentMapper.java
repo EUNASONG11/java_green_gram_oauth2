@@ -1,5 +1,6 @@
 package com.green.greengramver2.feed.comment;
 
+import com.green.greengramver2.feed.comment.model.FeedCommentDelReq;
 import com.green.greengramver2.feed.comment.model.FeedCommentDto;
 import com.green.greengramver2.feed.comment.model.FeedCommentGetReq;
 import com.green.greengramver2.feed.comment.model.FeedCommentPostReq;
@@ -11,4 +12,5 @@ import java.util.List;
 public interface FeedCommentMapper {
     int insFeedComment(FeedCommentPostReq p);
     List<FeedCommentDto> selFeedCommentList(FeedCommentGetReq p);
+    int delFeedComment(FeedCommentDelReq p);
 }

@@ -70,7 +70,7 @@ public class FeedService {
             res.setPics(pics);
 
             //피드당 댓글 4개
-            FeedCommentGetReq commentGetReq = new FeedCommentGetReq(res.getFeedId(), 1);
+            FeedCommentGetReq commentGetReq = new FeedCommentGetReq(res.getFeedId(), 0, 3);
 //            commentGetReq.setPage(1);
 //            commentGetReq.setFeedId(res.getFeedId());
 

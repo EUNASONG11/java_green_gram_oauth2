@@ -1,6 +1,7 @@
 package com.green.greengramver2.feed.comment;
 
 import com.green.greengramver2.common.model.ResultResponse;
+import com.green.greengramver2.feed.comment.model.FeedCommentDelReq;
 import com.green.greengramver2.feed.comment.model.FeedCommentGetReq;
 import com.green.greengramver2.feed.comment.model.FeedCommentGetRes;
 import com.green.greengramver2.feed.comment.model.FeedCommentPostReq;
@@ -40,8 +41,8 @@ public class FeedCommentController {
     }
 
     @GetMapping("/ver2")
-    public ResultResponse<FeedCommentGetRes> getFeedComment2(@RequestParam("feed_id") long feedId, @RequestParam int page) {
-        FeedCommentGetReq p = new FeedCommentGetReq(feedId, page);
+    public ResultResponse<FeedCommentGetRes> getFeedComment2(@RequestParam("feed_id") long feedId, @RequestParam("start_idx") int startIdx, int size) {
+        FeedCommentGetReq p = new FeedCommentGetReq(feedId, startIdx, size);
         FeedCommentGetRes res = service.getFeedComment(p);
 
         return ResultResponse.<FeedCommentGetRes>builder()
@@ -53,7 +54,16 @@ public class FeedCommentController {
     @DeleteMapping
     //feed_comment_id, signed_user_id
     //FE - data 전달방식 : Query-String
-    public ResultResponse<Integer> delFeedComment () {
-        return null;
+    public ResultResponse<Integer> delFeedComment (@ParameterObject @ModelAttribute FeedCommentDelReq p) {
+        log.info("FeedCommentController > delFeedComment > p: {}", p);
+        int result = service.delFeedComment(p);
+        String message = "삭제에 성공했습니다.";
+        if (result == 0) {
+            message = "삭제에 실패했습니다.";
+        }
+        return ResultResponse.<Integer>builder()
+                .resultMessage(message)
+                .resultData(result)
+                .build();
     }
 }
