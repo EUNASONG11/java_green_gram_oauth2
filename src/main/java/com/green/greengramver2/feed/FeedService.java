@@ -70,18 +70,18 @@ public class FeedService {
             res.setPics(pics);
 
             //피드당 댓글 4개
-            FeedCommentGetReq commentGetReq = new FeedCommentGetReq();
-            commentGetReq.setPage(1);
-            commentGetReq.setFeedId(res.getFeedId());
+            FeedCommentGetReq commentGetReq = new FeedCommentGetReq(res.getFeedId(), 1);
+//            commentGetReq.setPage(1);
+//            commentGetReq.setFeedId(res.getFeedId());
 
             List<FeedCommentDto> commentList = feedCommentMapper.selFeedCommentList(commentGetReq);
 
-            FeedCommentGetRes commentGetRes = new FeedCommentGetRes();
-            commentGetRes.setCommentList(commentList);
-            commentGetRes.setMoreComment(commentList.size() == 4);//4개면 true, 4개 아니면 false
+                FeedCommentGetRes commentGetRes = new FeedCommentGetRes();
+                commentGetRes.setCommentList(commentList);
+                commentGetRes.setMoreComment(commentList.size() == commentGetReq.getSize());//4개면 true, 4개 아니면 false
 
-            if (commentGetRes.isMoreComment()) {
-                commentList.remove(commentList.size() - 1);
+                if (commentGetRes.isMoreComment()) {
+                    commentList.remove(commentList.size() - 1);
             }
             res.setComment(commentGetRes);
         }
