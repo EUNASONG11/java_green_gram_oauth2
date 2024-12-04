@@ -23,7 +23,6 @@ import java.util.List;
 public class FeedService {
     private final FeedMapper mapper;
     private final FeedPicsMapper feedPicsMapper;
-    private final FeedCommentMapper commentMapper;
     private final MyFileUtils myFileUtils;
     private final FeedCommentMapper feedCommentMapper;
 
