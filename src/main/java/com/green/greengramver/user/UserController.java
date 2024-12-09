@@ -46,4 +46,15 @@ public class UserController {
                 .resultData(res)
                 .build();
     }
+
+    @PatchMapping("pic")
+    public ResultResponse<String> patchProfilePic(@ModelAttribute UserPicPatchReq p) {
+        log.info("UserController > patchProfilePic > p: {}", p);
+        String pic = service.patchUserPic(p);
+        return ResultResponse.<String>builder()
+                .resultMessage("프로필 사진 수정 완료")
+                .resultData(pic)
+                .build();
+    }
+
 }

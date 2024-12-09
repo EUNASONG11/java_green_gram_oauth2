@@ -14,10 +14,14 @@ import java.util.UUID;
 public class MyFileUtils {
      private final String uploadPath;
 
-     /*
-        @Value("${file.directory}")은
-        yaml 파일에 있는 file.directory 속성에 저장된 값을 생성자 호출할 때 값을 넣어준다.
-      */
+    public String getUploadPath() {
+        return uploadPath;
+    }
+
+    /*
+            @Value("${file.directory}")은
+            yaml 파일에 있는 file.directory 속성에 저장된 값을 생성자 호출할 때 값을 넣어준다.
+          */
      public MyFileUtils(@Value("${file.directory}") String uploadPath) {
          log.info("MyfileUtils - 생성자: {}", uploadPath);
          this.uploadPath = uploadPath;
@@ -59,6 +63,27 @@ public class MyFileUtils {
          File file = new File(uploadPath, path);
          mf.transferTo(file);
     }
+
+    //폴더 지우기, ex) "user/1"
+    public void deleteFolder(String path, boolean deleteRootFolder) {
+         File folder = new File(path);
+         if (folder.exists() && folder.isDirectory()) { // 폴더가 존재하면서 디렉토리인가?
+             File[] includedFiles = folder.listFiles();
+
+             for (File f : includedFiles) {
+                 if(f.isDirectory()) {
+                     deleteFolder(f.getAbsolutePath(), true);
+                 } else {
+                     f.delete();
+                 }
+             }
+             if (deleteRootFolder) {
+                 folder.delete();
+             }
+         }
+    }
+
+
 }
 
 

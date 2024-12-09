@@ -21,6 +21,9 @@
           LEFT JOIN feed_like C
             ON A.feed_id = C.feed_id
            AND C.user_id = #{signedUserId}
+        <if test="profileUserId != null">
+            WHERE A.writer_user_id = #{profileUserId}
+        </if>
          ORDER BY A.feed_id DESC
          LIMIT #{startIdx}, #{size}
     </select>

@@ -38,4 +38,10 @@
             ON F3.feed_id = F4.feed_id
          WHERE A.user_id = #{profileUserId}
     </select>
+
+    <update id="updUserPic">
+        UPDATE user
+           SET pic = #{picName}
+         WHERE user_id = #{signedUserId}
+    </update>
 </mapper>
