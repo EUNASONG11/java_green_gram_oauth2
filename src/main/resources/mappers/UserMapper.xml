@@ -24,7 +24,7 @@
              , COUNT(DISTINCT F1.from_user_id, F1.to_user_id) AS `follower`
              , COUNT(DISTINCT F2.from_user_id, F2.to_user_id) AS `following`
              , COUNT(DISTINCT F3.feed_id) AS feedCount
-             , COUNT(DISTINCT F4.feed_id, F4.user_id) AS myFeedLikeCnt
+             , COUNT(DISTINCT F4.feed_id, F4.user_id) AS myFeedLikeCount
              , MAX(IF(F1.from_user_id = #{signedUserId}, 1, 0))
              + MAX(IF(F2.to_user_id = #{signedUserId}, 2, 0)) AS followState
           FROM user A
