@@ -88,7 +88,7 @@ public class FeedService {
 
     @Transactional
     public int deleteFeed(FeedDeleteReq p) {
-        //피드 사진 삭제
+        //피드 사진 삭제 (폴더 삭제)
         String deletePath = String.format("%s/feed/%d", myFileUtils.getUploadPath(), p.getFeedId());
         myFileUtils.deleteFolder(deletePath, true);
 
