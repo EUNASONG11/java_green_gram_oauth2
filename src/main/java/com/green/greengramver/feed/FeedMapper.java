@@ -1,5 +1,6 @@
 package com.green.greengramver.feed;
 
+import com.green.greengramver.feed.model.FeedDeleteReq;
 import com.green.greengramver.feed.model.FeedGetReq;
 import com.green.greengramver.feed.model.FeedGetRes;
 import com.green.greengramver.feed.model.FeedPostReq;
@@ -12,4 +13,6 @@ public interface FeedMapper {
     int insFeed(FeedPostReq p);
     List<FeedGetRes> selFeedList(FeedGetReq p);
 
+    int delFeedLikeAndFeedCommentAndFeedPic(FeedDeleteReq p);
+    int delFeed(FeedDeleteReq p);
 }
