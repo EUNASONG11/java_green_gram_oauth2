@@ -27,6 +27,7 @@
          ORDER BY A.feed_id DESC
          LIMIT #{startIdx}, #{size}
     </select>
+
     <delete id="delFeedLikeAndFeedCommentAndFeedPic">
         DELETE B, C, D
         FROM feed A

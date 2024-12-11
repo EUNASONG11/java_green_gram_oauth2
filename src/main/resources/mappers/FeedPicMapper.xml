@@ -31,5 +31,6 @@
             #{item}
         </foreach>
         )
+        ORDER BY feed_id DESC
     </select>
 </mapper>

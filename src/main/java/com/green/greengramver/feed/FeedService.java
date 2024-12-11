@@ -119,7 +119,7 @@ public class FeedService {
         List<FeedPicSel> feedPicList = feedPicMapper.selFeedPicListByFeedId(feedIdList);
         log.info("feedPicList: {}", feedPicList);
 
-        Map<Long, List<String>> picHashMap = new HashMap<>();
+        Map<Long, List<String>> picHashMap = new HashMap<>(); // Long 타입의 feedId를 연결고리로
         for (FeedPicSel item : feedPicList) {
             long feedId = item.getFeedId();
             if (!picHashMap.containsKey(feedId)) {
