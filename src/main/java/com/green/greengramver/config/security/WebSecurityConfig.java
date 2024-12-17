@@ -11,7 +11,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @Configuration // 빈등록 가능, 메소드 빈등록 가능
 @RequiredArgsConstructor
 public class WebSecurityConfig {
-    // Spring Security 기능 비활성화(Spring Security가 관여하지 않았으면 하는 부분)
+    // Spring Security 기능 비활성화(Spring Security 가 관여하지 않았으면 하는 부분)
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer() {
         return web -> web.ignoring()
