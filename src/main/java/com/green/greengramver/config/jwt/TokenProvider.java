@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.green.greengramver.config.security.MyUserDetails;
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
@@ -30,7 +31,7 @@ public class TokenProvider {
     public TokenProvider(ObjectMapper objectMapper, JwtProperties jwtProperties) {
         this.objectMapper = objectMapper;
         this.jwtProperties = jwtProperties;
-        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey()));
+        this.secretKey = Keys.hmacShaKeyFor(Decoders.BASE64.decode(jwtProperties.getSecretKey())); // 43자 이상
     }
 
     // JWT 생성
@@ -40,10 +41,16 @@ public class TokenProvider {
     }
 
     private String makeToken(JwtUser jwtUser, Date expiry) {
+//        JwtBuilder builder = Jwts.builder();
+//        JwtBuilder.BuilderHeader header = builder.header();
+//        header.type("JWT");
+//
+//        builder.issuer(jwtProperties.getIssuer());
+
+
         // JWT 암호화
         return Jwts.builder()
-                .header().add("typ", "JWT")
-                         .add("alg", "HS256")
+                .header().type("JWT")
                 .and()
                 .issuer(jwtProperties.getIssuer())
                 .issuedAt(new Date())
@@ -54,7 +61,7 @@ public class TokenProvider {
     }
 
     private String makeClaimByUserToString(JwtUser jwtUser) {
-        // 객체 자체를 JWT에 담고 싶어서 객체를 직렬화
+        // 객체 자체를 JWT에 담고 싶어서 객체를 직렬화(여기서는 객체를 String으로 바꾸는 작업)
         // jwtUser에 담고 있는 데이터를 JSON 형태의 문자열로 변환 - 직렬화
         try {
             return objectMapper.writeValueAsString(jwtUser);
@@ -81,13 +88,18 @@ public class TokenProvider {
     public UserDetails getUserDetailsFromToken(String token) {
         Claims claims = getClaims(token);
         String json = (String)claims.get("signedUser");
-        JwtUser jwtUser = objectMapper.convertValue(json, JwtUser.class);
+        JwtUser jwtUser = null;
+        try {
+            jwtUser = objectMapper.readValue(json, JwtUser.class);
+        } catch (JsonProcessingException e) {
+            throw new RuntimeException(e);
+        }
         MyUserDetails userDetails = new MyUserDetails();
         userDetails.setJwtUser(jwtUser);
         return userDetails;
     }
 
     private Claims getClaims(String token) {
-        return Jwts.parser().verifyWith(secretKey).build().parseEncryptedClaims(token).getPayload();
+        return Jwts.parser().verifyWith(secretKey).build().parseSignedClaims(token).getPayload();
     }
 }
