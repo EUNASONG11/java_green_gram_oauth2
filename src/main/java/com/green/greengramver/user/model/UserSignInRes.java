@@ -17,4 +17,6 @@ public class UserSignInRes {
     private String upw;
     @JsonIgnore
     private String message;
+
+    private String accessToken;
 }
