@@ -7,6 +7,8 @@ import com.green.greengramver.config.jwt.JwtProperties;
 import com.green.greengramver.config.jwt.JwtUser;
 import com.green.greengramver.config.jwt.TokenProvider;
 import com.green.greengramver.user.model.*;
+import jakarta.servlet.http.Cookie;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -95,6 +97,13 @@ public class UserService {
 
     public UserInfoGetRes getUserInfo(UserInfoGetReq p) {
         return mapper.selUserInfo(p);
+    }
+
+    public String getAccessToken (HttpServletRequest req) {
+        Cookie cookie = cookieUtils.getCookie(req,"refreshToken");
+        String refreshToken = cookie.getValue();
+        log.info("refreshToken: {}", refreshToken);
+        return refreshToken;
     }
 
     @Transactional

@@ -3,6 +3,7 @@ package com.green.greengramver.user;
 import com.green.greengramver.common.model.ResultResponse;
 import com.green.greengramver.user.model.*;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +46,16 @@ public class UserController {
         return ResultResponse.<UserInfoGetRes>builder()
                 .resultMessage("유저 프로필 정보")
                 .resultData(res)
+                .build();
+    }
+
+    @GetMapping("access-token")
+    @Operation(summary = "accessToken 재발행")
+    public ResultResponse<String> getAccessToken(HttpServletRequest req) {
+        String accessToken = service.getAccessToken(req);
+        return ResultResponse.<String>builder()
+                .resultMessage("Access Token 재발행")
+                .resultData(accessToken)
                 .build();
     }
 
