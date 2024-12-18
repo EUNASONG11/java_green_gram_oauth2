@@ -74,12 +74,13 @@ public class TokenProvider {
         try {
             // JWT 복호화
             getClaims(token);
-            return true;
         } catch (Exception e) {
             return false;
         }
+        return true;
     }
 
+    // Spring Security에서 인증 처리를 해주어야 한다. 그 때 Authentication 객체가 필요
     public Authentication getAuthentication(String token) { //인증, 인가할 때 쓰는
        UserDetails userDetails = getUserDetailsFromToken(token);
        return userDetails == null ? null : new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
