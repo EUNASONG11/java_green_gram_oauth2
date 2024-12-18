@@ -26,7 +26,7 @@ public class CookieUtils {
     public void setCookie(HttpServletResponse res, String name, String value, int maxAge) {
         Cookie cookie = new Cookie(name, value);
         cookie.setPath("/api/user/access-token"); // 이 요청으로 들어올 때만 쿠키 값이 넘어올 수 있도록
-        cookie.setHttpOnly(true); // 보인 쿠키 설정, 프론트에서 JS로 쿠키값으 얻을 수 없다.
+        cookie.setHttpOnly(true); // 보인 쿠키 설정, 프론트에서 JS로 쿠키값을 얻을 수 없다.
         cookie.setMaxAge(maxAge);
         res.addCookie(cookie);
     }
