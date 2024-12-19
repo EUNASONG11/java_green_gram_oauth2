@@ -1,5 +1,6 @@
 package com.green.greengramver.feed.comment;
 
+import com.green.greengramver.config.security.AuthenticationFacade;
 import com.green.greengramver.feed.comment.model.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -13,8 +14,10 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FeedCommentService {
     private final FeedCommentMapper mapper;
+    private final AuthenticationFacade authenticationFacade;
 
     public long postFeedComment(FeedCommentPostReq p) {
+        p.setUserId(authenticationFacade.getSignedUserId());
         int result = mapper.insFeedComment(p);
 
         return p.getFeedCommentId();
@@ -37,6 +40,7 @@ public class FeedCommentService {
     }
 
     public int delFeedComment(FeedCommentDelReq p) {
+        p.setUserId(authenticationFacade.getSignedUserId());
         int result = mapper.delFeedComment(p);
         return result;
     }

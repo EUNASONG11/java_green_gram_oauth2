@@ -23,6 +23,7 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+        log.info("ip Address: {}", request.getRemoteAddr());
         String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION); // "Bearer 토큰값" 이 값으로 들어옴
         log.info("authorizationHeader: {}", authorizationHeader);
 

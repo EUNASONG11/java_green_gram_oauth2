@@ -1,6 +1,7 @@
 package com.green.greengramver.feed;
 
 import com.green.greengramver.common.MyFileUtils;
+import com.green.greengramver.config.security.AuthenticationFacade;
 import com.green.greengramver.feed.comment.FeedCommentMapper;
 import com.green.greengramver.feed.comment.model.FeedCommentDto;
 import com.green.greengramver.feed.comment.model.FeedCommentGetReq;
@@ -27,9 +28,11 @@ public class FeedService {
     private final FeedPicMapper feedPicMapper;
     private final MyFileUtils myFileUtils;
     private final FeedCommentMapper feedCommentMapper;
+    private final AuthenticationFacade authenticationFacade;
 
     @Transactional
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
+        p.setWriterUserId(authenticationFacade.getSignedUserId());
         int result = mapper.insFeed(p);
         //-------------- 파일 등록
         long feedId = p.getFeedId();
@@ -65,6 +68,7 @@ public class FeedService {
 
     // N+1 이슈 발생 (만약 피드가 20개면 총 41번의 select가 발생)
     public List<FeedGetRes> getFeedList(FeedGetReq p) {
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         List<FeedGetRes> list = mapper.selFeedList(p);
 
         for (FeedGetRes res : list) {
@@ -100,6 +104,7 @@ public class FeedService {
 
     // select 3번, 피드 5,000개 있음, 페이지당 20개씩 가져온다.
     public List<FeedGetRes> getFeedList3(FeedGetReq p) {
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         // 피드 리스트
         List<FeedGetRes> list = mapper.selFeedList(p);
         if (list.size() == 0) {
@@ -186,6 +191,7 @@ public class FeedService {
 
     @Transactional
     public int deleteFeed(FeedDeleteReq p) {
+        p.setSignedUserId(authenticationFacade.getSignedUserId());
         //피드 사진 삭제 (폴더 삭제)
         String deletePath = String.format("%s/feed/%d", myFileUtils.getUploadPath(), p.getFeedId());
         myFileUtils.deleteFolder(deletePath, true);
