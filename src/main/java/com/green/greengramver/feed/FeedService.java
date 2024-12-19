@@ -102,6 +102,9 @@ public class FeedService {
     public List<FeedGetRes> getFeedList3(FeedGetReq p) {
         // 피드 리스트
         List<FeedGetRes> list = mapper.selFeedList(p);
+        if (list.size() == 0) {
+            return list;
+        }
 
         // feed_id를 골라내야 한다.
         List<Long> feedIdList = new ArrayList<>();
