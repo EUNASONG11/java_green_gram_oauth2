@@ -106,7 +106,11 @@ public class UserService {
         Cookie cookie = cookieUtils.getCookie(req,"refreshToken");
         String refreshToken = cookie.getValue();
         log.info("refreshToken: {}", refreshToken);
-        return refreshToken;
+
+        JwtUser jwtUser = tokenProvider.getJwtUserFromToken(refreshToken);
+        String accessToken = tokenProvider.generateToken(jwtUser, Duration.ofMinutes(20));
+
+        return accessToken;
     }
 
     @Transactional

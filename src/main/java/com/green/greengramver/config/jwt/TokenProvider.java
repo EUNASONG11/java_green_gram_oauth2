@@ -4,23 +4,17 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.green.greengramver.config.security.MyUserDetails;
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
 import java.time.Duration;
-import java.util.Collections;
 import java.util.Date;
-import java.util.Set;
 
 @Service
 public class TokenProvider {
@@ -86,7 +80,7 @@ public class TokenProvider {
        return userDetails == null ? null : new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
 
-    public UserDetails getUserDetailsFromToken(String token) {
+    public JwtUser getJwtUserFromToken(String token) {
         Claims claims = getClaims(token);
         String json = (String)claims.get("signedUser");
         JwtUser jwtUser = null;
@@ -95,6 +89,11 @@ public class TokenProvider {
         } catch (JsonProcessingException e) {
             throw new RuntimeException(e);
         }
+        return jwtUser;
+    }
+
+    public UserDetails getUserDetailsFromToken(String token) {
+        JwtUser jwtUser = getJwtUserFromToken(token);
         MyUserDetails userDetails = new MyUserDetails();
         userDetails.setJwtUser(jwtUser);
         return userDetails;
