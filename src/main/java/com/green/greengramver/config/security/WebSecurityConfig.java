@@ -1,6 +1,7 @@
 package com.green.greengramver.config.security;
 // Spring Security 세팅
 
+import com.green.greengramver.config.jwt.TokenAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -9,11 +10,13 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 
 @Configuration // 빈등록 가능, 메소드 빈등록이 있어야 의미가 있다.
 @RequiredArgsConstructor
 public class WebSecurityConfig {
+    private final TokenAuthenticationFilter tokenAuthenticationFilter;
     // Spring Security 기능 비활성화(Spring Security 가 관여하지 않았으면 하는 부분)
 //    @Bean
 //    public WebSecurityCustomizer webSecurityCustomizer() {
@@ -29,7 +32,8 @@ public class WebSecurityConfig {
                 .authorizeHttpRequests(req -> req.requestMatchers("/api/feed","/api/feed/**").authenticated()// 로그인이 되어 있어야만 사용 가능
                                                  .requestMatchers(HttpMethod.GET,"/api/user").authenticated()
                                                  .requestMatchers(HttpMethod.PATCH,"/api/user/pic").authenticated()
-                                                 .anyRequest().permitAll()) // 나머지 요청은 모두 허용
+                                                 .anyRequest().permitAll())// 나머지 요청은 모두 허용
+                .addFilterBefore(tokenAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

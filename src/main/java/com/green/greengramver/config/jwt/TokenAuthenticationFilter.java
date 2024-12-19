@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
@@ -21,16 +23,21 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);
+        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION); // "Bearer 토큰값" 이 값으로 들어옴
         log.info("authorizationHeader: {}", authorizationHeader);
 
         String token = getAccessToken(authorizationHeader);
+
+        if (tokenProvider.validToken(token)) {
+            Authentication auth = tokenProvider.getAuthentication(token);
+            SecurityContextHolder.getContext().setAuthentication(auth);
+        }
 
         filterChain.doFilter(request, response);
     }
 
     private String getAccessToken(String authorizationHeader) {
-        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) {
+        if (authorizationHeader != null && authorizationHeader.startsWith(TOKEN_PREFIX)) { // 문자열이 TOKEN_PREFIX 로 시작하는 지 안하는 지
             return authorizationHeader.substring(TOKEN_PREFIX.length());
         }
         return null;
