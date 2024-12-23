@@ -82,7 +82,7 @@ public class UserService {
         roles.add("ROLE_ADMIN");
         jwtUser.setRoles(roles);
 
-        String accessToken = tokenProvider.generateToken(jwtUser, Duration.ofMinutes(20));
+        String accessToken = tokenProvider.generateToken(jwtUser, Duration.ofSeconds(30));
         String refreshToken = tokenProvider.generateToken(jwtUser, Duration.ofDays(15));
 
         // refreshToken은 쿠키에 담는다.
