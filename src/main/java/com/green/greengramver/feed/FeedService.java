@@ -1,6 +1,8 @@
 package com.green.greengramver.feed;
 
 import com.green.greengramver.common.MyFileUtils;
+import com.green.greengramver.common.exception.CustomException;
+import com.green.greengramver.common.exception.FeedErrorCode;
 import com.green.greengramver.config.security.AuthenticationFacade;
 import com.green.greengramver.feed.comment.FeedCommentMapper;
 import com.green.greengramver.feed.comment.model.FeedCommentDto;
@@ -34,6 +36,9 @@ public class FeedService {
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
         p.setWriterUserId(authenticationFacade.getSignedUserId());
         int result = mapper.insFeed(p);
+        if (result == 0) {
+            throw new CustomException(FeedErrorCode.FAIL_TO_REG);
+        }
         //-------------- 파일 등록
         long feedId = p.getFeedId();
         //저장 폴더 만들기, 저장 위치/feed/${feedId}/파일들을 저장한다.
@@ -50,7 +55,10 @@ public class FeedService {
             try {
                 myFileUtils.transferTo(pic, filePath);
             } catch (IOException e) {
-                e.printStackTrace();
+                //폴더 삭제 처리
+                String delFolderPath = String.format("%s/%s", myFileUtils.getUploadPath(), middlePath);
+                myFileUtils.deleteFolder(delFolderPath, true);
+                throw new CustomException(FeedErrorCode.FAIL_TO_REG);
             }
 
         }

@@ -35,15 +35,15 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
         return handleExceptionInternal(CommonErrorCode.INVALID_PARAMETER, ex);
     }
 
-    @ExceptionHandler(SignatureException.class) //토큰이 오염 되었을 때
-    public ResponseEntity<Object> handleSignatureException() {
+    @ExceptionHandler({MalformedJwtException.class, SignatureException.class}) //토큰 값이 유효하지 않을 때, 토큰이 오염 되었을 때
+    public ResponseEntity<Object> handleMalformedJwtException() {
         return handleExceptionInternal(UserErrorCode.UNAUTHENTICATED);
     }
 
-    @ExceptionHandler(MalformedJwtException.class) //토큰 값이 유효하지 않을 때
-    public ResponseEntity<Object> handleMalformedJwtException() {
-        return handleExceptionInternal(UserErrorCode.INVALID_TOKEN);
-    }
+//    @ExceptionHandler(MalformedJwtException.class) //토큰 값이 유효하지 않을 때
+//    public ResponseEntity<Object> handleMalformedJwtException() {
+//        return handleExceptionInternal(UserErrorCode.INVALID_TOKEN);
+//    }
 
     @ExceptionHandler(ExpiredJwtException.class) //토큰이 만료가 되었을 때
     public ResponseEntity<Object> handleExpiredJwtException() {
