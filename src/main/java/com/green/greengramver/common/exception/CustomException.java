@@ -8,5 +8,5 @@ import lombok.ToString;
 @RequiredArgsConstructor
 @ToString
 public class CustomException extends RuntimeException{
-    private final Error errorCode;
+    private final ErrorCode errorCode;
 }

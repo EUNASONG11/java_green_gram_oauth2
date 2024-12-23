@@ -5,6 +5,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
+import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -22,13 +23,30 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     //(추가 메소드) 우리가 커스텀 한 예외가 발생되었을 경우 캐치
     @ExceptionHandler(CustomException.class)
     public ResponseEntity<Object> handleException(CustomException e) {
-        return null;
+        return handleExceptionInternal(e.getErrorCode());
     }
 
     //Validation 예외가 발생되었을 경우 캐치
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode statusCode, WebRequest request) {
-        return null;
+        return handleExceptionInternal(CommonErrorCode.INVALID_PARAMETER, ex);
+    }
+
+    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode) {
+        return handleExceptionInternal(errorCode, null);
+    }
+
+    private ResponseEntity<Object> handleExceptionInternal(ErrorCode errorCode, BindException e) {
+        return ResponseEntity.status(errorCode.getHttpStatus())
+                             .body(makeErrorResponse(errorCode, e));
+    }
+
+    private MyErrorResponse makeErrorResponse(ErrorCode errorCode, BindException e) {
+        return MyErrorResponse.builder()
+                .resultMessage(errorCode.getMessage())
+                .resultData(errorCode.name())
+                .valids(e == null ? null : getValidationErrors(e))
+                .build();
     }
 
 

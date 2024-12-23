@@ -5,6 +5,7 @@ import com.green.greengramver.feed.comment.model.FeedCommentDelReq;
 import com.green.greengramver.feed.comment.model.FeedCommentGetReq;
 import com.green.greengramver.feed.comment.model.FeedCommentGetRes;
 import com.green.greengramver.feed.comment.model.FeedCommentPostReq;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springdoc.core.annotations.ParameterObject;
@@ -27,7 +28,7 @@ public class FeedCommentController {
     }
 
     @GetMapping
-    public ResultResponse<FeedCommentGetRes> getFeedComment(@ParameterObject @ModelAttribute FeedCommentGetReq p) {
+    public ResultResponse<FeedCommentGetRes> getFeedComment(@Valid @ParameterObject @ModelAttribute FeedCommentGetReq p) {
 //      FeedCommentGetReq p = new FeedCommentGetReq();
 //
 //      p.setPage(page);

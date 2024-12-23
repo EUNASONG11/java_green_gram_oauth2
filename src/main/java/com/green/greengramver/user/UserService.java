@@ -3,6 +3,8 @@ package com.green.greengramver.user;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.green.greengramver.common.CookieUtils;
 import com.green.greengramver.common.MyFileUtils;
+import com.green.greengramver.common.exception.CustomException;
+import com.green.greengramver.common.exception.UserErrorCode;
 import com.green.greengramver.config.jwt.JwtProperties;
 import com.green.greengramver.config.jwt.JwtUser;
 import com.green.greengramver.config.jwt.TokenProvider;
@@ -64,13 +66,8 @@ public class UserService {
 
     public UserSignInRes postSignIn(UserSignInReq p, HttpServletResponse response){
         UserSignInRes res = mapper.selUserByUid(p.getUid());
-        if (res == null) {
-            res = new UserSignInRes();
-            res.setMessage("아이디를 확인해 주세요.");
-        } else if (!passwordEncoder.matches(p.getUpw(), res.getUpw())) {
-            res = new UserSignInRes();
-            res.setMessage("비밀번호를 확인해 주세요.");
-            return res;
+        if (res == null || !passwordEncoder.matches(p.getUpw(), res.getUpw())) {
+            throw new CustomException(UserErrorCode.INCORRECT_ID_PW);
         }
 
         /*
