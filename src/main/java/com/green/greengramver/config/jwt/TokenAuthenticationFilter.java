@@ -24,21 +24,18 @@ public class TokenAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         log.info("ip Address: {}", request.getRemoteAddr());
-        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION); // "Bearer 토큰값" 이 값으로 들어옴
+        String authorizationHeader = request.getHeader(HEADER_AUTHORIZATION);  //"Bearer 토큰값"
         log.info("authorizationHeader: {}", authorizationHeader);
 
         String token = getAccessToken(authorizationHeader);
+        log.info("token: {}", token);
 
-        if (token != null) {
-            boolean result = false;
+        if(token != null) {
             try {
-                result = tokenProvider.validToken(token);
-            } catch (Exception e) {
-                request.setAttribute("exception", e);
-            }
-            if (result) {
                 Authentication auth = tokenProvider.getAuthentication(token);
                 SecurityContextHolder.getContext().setAuthentication(auth);
+            } catch (Exception e) {
+                request.setAttribute("exception", e);
             }
         }
         filterChain.doFilter(request, response);
