@@ -107,12 +107,15 @@ public class FeedService {
     // select 2번
     public List<FeedGetRes> getFeedList2(FeedGetReq p) {
         List<FeedGetRes> list = new ArrayList<>(p.getSize());
+        List<Long> feedIdList = new ArrayList<>(p.getSize());
         //SELECT (1) : feed + feed_pic
         List<FeedAndPicDto> feedAndPicDtoList = feedMapper.selFeedWithPicList(p);
 
         FeedGetRes beforeFeedGetRes = new FeedGetRes();
         for (FeedAndPicDto feedAndPicDto : feedAndPicDtoList) {
             if (beforeFeedGetRes.getFeedId() != feedAndPicDto.getFeedId()) { // feedId가 달랐을 때만 새로 담기
+                feedIdList.add(feedAndPicDto.getFeedId());
+
                 beforeFeedGetRes = new FeedGetRes();
                 beforeFeedGetRes.setPics(new ArrayList<>(3));
                 list.add(beforeFeedGetRes);
@@ -130,6 +133,34 @@ public class FeedService {
 
 
         //SELECT (2) : feed_comment
+        List<FeedCommentDto> commentDto = feedCommentMapper.selFeedCommentsWithLimit(feedIdList);
+
+        Map<Long, FeedCommentGetRes> commentsMap = new HashMap<>();
+        for (FeedCommentDto dto : commentDto) {
+            long feedId = dto.getFeedId();
+            if (!commentsMap.containsKey(feedId)) {
+                FeedCommentGetRes feedCommentGetRes = new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>());
+                commentsMap.put(feedId, feedCommentGetRes);
+            }
+            FeedCommentGetRes feedCommentGetRes = commentsMap.get(feedId);
+            feedCommentGetRes.getCommentList().add(dto);
+        }
+
+        for (FeedGetRes res : list) {
+
+            FeedCommentGetRes feedCommentGetRes = commentsMap.get(res.getFeedId());
+
+            if (feedCommentGetRes == null) {
+                feedCommentGetRes = new FeedCommentGetRes();
+                feedCommentGetRes.setCommentList(new ArrayList<>());
+            } else if (feedCommentGetRes.getCommentList().size() == 4) {
+                feedCommentGetRes.setMoreComment(true);
+                feedCommentGetRes.getCommentList().remove(feedCommentGetRes.getCommentList().size() - 1);
+            }
+            res.setComment(feedCommentGetRes);
+        }
+
 
         return list;
     }
@@ -219,6 +250,11 @@ public class FeedService {
 
         log.info("feedPicList: {}", feedPicList);
         return list;
+    }
+
+    public List<FeedGetRes> getFeedList4(FeedGetReq p) {
+        List<FeedWithPicCommentDto> dtoList = feedMapper.selFeedWithPicAndCommentLimit4List(p);
+        return null;
     }
 
     @Transactional
