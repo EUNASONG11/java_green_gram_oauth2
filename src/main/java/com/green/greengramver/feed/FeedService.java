@@ -252,9 +252,14 @@ public class FeedService {
         return list;
     }
 
+    //Mybatis
     public List<FeedGetRes> getFeedList4(FeedGetReq p) {
         List<FeedWithPicCommentDto> dtoList = feedMapper.selFeedWithPicAndCommentLimit4List(p);
-        return null;
+        List<FeedGetRes> res = new ArrayList<>(dtoList.size());
+        for (FeedWithPicCommentDto dto : dtoList) {
+            res.add(new FeedGetRes(dto));
+        }
+        return res;
     }
 
     @Transactional

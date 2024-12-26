@@ -1,5 +1,6 @@
 package com.green.greengramver.feed.model;
 
+import com.green.greengramver.feed.comment.model.FeedCommentDto;
 import com.green.greengramver.feed.comment.model.FeedCommentGetRes;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -38,6 +39,15 @@ public class FeedGetRes {
         this.writerNm = dto.getWriterNm();
         this.isLike = dto.getIsLike();
         this.pics = dto.getPics();
+
         //dto.getCommentList().size()값이 4라면
+        this.comment = new FeedCommentGetRes();
+        List<FeedCommentDto> list = dto.getCommentList();
+        if (list == null) {
+            comment.setCommentList(new ArrayList<>());
+        } else if (dto.getCommentList().size() == 4) {
+            this.comment.setMoreComment(true);
+            list.remove(dto.getCommentList().size() - 1);
+        }
     }
 }
