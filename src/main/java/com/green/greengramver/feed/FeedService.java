@@ -31,6 +31,7 @@ public class FeedService {
     private final MyFileUtils myFileUtils;
     private final FeedCommentMapper feedCommentMapper;
     private final AuthenticationFacade authenticationFacade;
+    private final FeedMapper feedMapper;
 
     @Transactional
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
@@ -105,9 +106,32 @@ public class FeedService {
 
     // select 2번
     public List<FeedGetRes> getFeedList2(FeedGetReq p) {
+        List<FeedGetRes> list = new ArrayList<>(p.getSize());
+        //SELECT (1) : feed + feed_pic
+        List<FeedAndPicDto> feedAndPicDtoList = feedMapper.selFeedWithPicList(p);
+
+        FeedGetRes beforeFeedGetRes = new FeedGetRes();
+        for (FeedAndPicDto feedAndPicDto : feedAndPicDtoList) {
+            if (beforeFeedGetRes.getFeedId() != feedAndPicDto.getFeedId()) { // feedId가 달랐을 때만 새로 담기
+                beforeFeedGetRes = new FeedGetRes();
+                beforeFeedGetRes.setPics(new ArrayList<>(3));
+                list.add(beforeFeedGetRes);
+                beforeFeedGetRes.setFeedId(feedAndPicDto.getFeedId());
+                beforeFeedGetRes.setContents(feedAndPicDto.getContents());
+                beforeFeedGetRes.setLocation(feedAndPicDto.getLocation());
+                beforeFeedGetRes.setCreatedAt(feedAndPicDto.getCreatedAt());
+                beforeFeedGetRes.setWriterUserId(feedAndPicDto.getWriterUserId());
+                beforeFeedGetRes.setWriterPic(feedAndPicDto.getWriterPic());
+                beforeFeedGetRes.setWriterNm(feedAndPicDto.getWriterNm());
+                beforeFeedGetRes.setIsLike(feedAndPicDto.getIsLike());
+            }
+            beforeFeedGetRes.getPics().add(feedAndPicDto.getPic());
+        }
 
 
-        return null;
+        //SELECT (2) : feed_comment
+
+        return list;
     }
 
     // select 3번, 피드 5,000개 있음, 페이지당 20개씩 가져온다.
