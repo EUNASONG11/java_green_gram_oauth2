@@ -1,5 +1,15 @@
 package com.green.greengramver.feed.like;
 
+/*
+    TDD - Test Driven Development
+    테스트 코드를 작성 > 작업 코드를 검증
+    Spring 권장 JUnit 5
+
+    Unit Test (단위 테스트) - 메소드 1개
+    Slice Test (계층 테스트) - Controller or Service or Mapper
+    Integration Test (통합 테스트) - Controller - Service - Mapper
+ */
+
 import com.green.greengramver.feed.like.model.FeedLikeReq;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
