@@ -111,12 +111,12 @@ public class FeedService {
         //SELECT (1) : feed + feed_pic
         List<FeedAndPicDto> feedAndPicDtoList = feedMapper.selFeedWithPicList(p);
 
-        FeedGetRes beforeFeedGetRes = new FeedGetRes();
+        FeedGetRes beforeFeedGetRes = new FeedGetRes(); // feedId 값 포함 모든 값을 0으로 세팅
         for (FeedAndPicDto feedAndPicDto : feedAndPicDtoList) {
             if (beforeFeedGetRes.getFeedId() != feedAndPicDto.getFeedId()) { // feedId가 달랐을 때만 새로 담기
                 feedIdList.add(feedAndPicDto.getFeedId());
 
-                beforeFeedGetRes = new FeedGetRes();
+                beforeFeedGetRes = new FeedGetRes(); // feedId 값이 다르다면 새로운 객체 생성
                 beforeFeedGetRes.setPics(new ArrayList<>(3));
                 list.add(beforeFeedGetRes);
                 beforeFeedGetRes.setFeedId(feedAndPicDto.getFeedId());
