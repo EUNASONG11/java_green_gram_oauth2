@@ -100,7 +100,7 @@ class FeedPicMapperTest {
                 , () -> assertEquals(givenParam.getPics().size(), actualAffectedRows)
                 , () -> assertEquals(0, feedPicListBefore.size())
                 , () -> assertEquals(givenParam.getPics().size(), feedPicListAfter.size())
-                , () -> feedPicListAfter.containsAll(Arrays.asList(pics))
+                , () -> assertTrue(feedPicListAfter.containsAll(Arrays.asList(pics)))
         );
     }
 
