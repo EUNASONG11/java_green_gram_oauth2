@@ -15,8 +15,8 @@ import java.util.ArrayList;
 import static org.junit.jupiter.api.Assertions.*;
 
 @ActiveProfiles("test")
-@MybatisTest
-@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
+@MybatisTest //Mybatis와 관련된 객체 다 생성
+@AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE) //기존 데이터베이스로 테스트 하겠다(H2 말고)
 class FeedPicMapperTest {
     @Autowired
     FeedPicMapper feedPicMapper;
@@ -32,6 +32,7 @@ class FeedPicMapperTest {
             feedPicMapper.insFeedPic(givenParam);
         });
     }
+
     @Test
     void insFeedPicNullPicsThrowNotNullException() {
         FeedPicDto givenParam = new FeedPicDto();
@@ -52,6 +53,7 @@ class FeedPicMapperTest {
             feedPicMapper.insFeedPic(givenParam);
         });
     }
+
     @Test
     void insFeedPic_PicStringLengthMoreThan50_ThrowException() { // 가독성을 위해서 _ 사용
         FeedPicDto givenParam = new FeedPicDto();

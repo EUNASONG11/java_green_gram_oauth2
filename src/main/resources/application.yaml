@@ -10,6 +10,8 @@ jwt:
 
 
 mybatis:
+  configuration:
+    map-underscore-to-camel-case: true # snake_case column명을 자동으로 camel_case형으로 변환
   mapper-locations: mappers/**/*.xml
 
 spring:
