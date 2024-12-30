@@ -10,7 +10,9 @@ package com.green.greengramver.feed.like;
     Integration Test (통합 테스트) - Controller - Service - Mapper
  */
 
+import com.green.greengramver.TestUtils;
 import com.green.greengramver.feed.like.model.FeedLikeReq;
+import com.green.greengramver.feed.like.model.FeedLikeVo;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,6 +22,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.jdbc.AutoConfigureTestDatabase;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.test.context.ActiveProfiles;
+
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -32,6 +36,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class FeedLikeMapperTest {
     @Autowired
     FeedLikeMapper feedLikeMapper; // 필드 주입 방식의 DI가 된다.
+
+    @Autowired
+    FeedLikeTestMapper feedLikeTestMapper;
 
     static final long FEED_ID_1 = 1L;
     static final long FEED_ID_5 = 5L;
@@ -76,10 +83,25 @@ class FeedLikeMapperTest {
     @Test
     void insFeedLikeNormal() {
         //when
+        //select를 한 이유는 insert 전과 후를 비교하기 위해서
+        List<FeedLikeVo> actualFeedLikeListBefore = feedLikeTestMapper.selFeedLikeAll(); //insert 전 기존 튜플 수 check
+        FeedLikeVo actualFeedLikeVoBefore = feedLikeTestMapper.selFeedLikeByFeedIdAndUserId(notExistedData); //insert 전 WHERE 절에 PK로 데이터를 가져옴
+
         int actualAffectedRows = feedLikeMapper.insFeedLike(notExistedData);
 
+        FeedLikeVo actualFeedLikeVoAfter = feedLikeTestMapper.selFeedLikeByFeedIdAndUserId(notExistedData); //insert 후 WHERE 절에 PK로 데이터를 가져옴
+        List<FeedLikeVo> actualFeedLikeListAfter = feedLikeTestMapper.selFeedLikeAll(); //insert 후 튜플 수 check
+
         //then
-        assertEquals(1, actualAffectedRows);
+        assertAll(
+                  () -> TestUtils.assertCurrentTimeStamp(actualFeedLikeVoAfter.getCreatedAt())
+                , () -> assertEquals(actualFeedLikeListBefore.size() + 1, actualFeedLikeListAfter.size())
+                , () -> assertNull(actualFeedLikeVoBefore) //내가 insert 하려고 한 데이터가 없는지를 단언 > null이어야 한다.
+                , () -> assertNotNull(actualFeedLikeVoAfter) //실제 insert가 내가 원하는 데이터로 되었는 지 단언
+                , () -> assertEquals(1, actualAffectedRows)
+                , () -> assertEquals(notExistedData.getFeedId(), actualFeedLikeVoAfter.getFeedId()) //내가 원하는 데이터로 insert 되었는 지 double check
+                , () -> assertEquals(notExistedData.getUserId(), actualFeedLikeVoAfter.getUserId()) //내가 원하는 데이터로 insert 되었는 지 double check
+        );
     }
 
     @Test
@@ -91,7 +113,16 @@ class FeedLikeMapperTest {
 
     @Test
     void delFeedLikeNormal() {
+        FeedLikeVo actualFeedLikeVoBefore = feedLikeTestMapper.selFeedLikeByFeedIdAndUserId(existedData);
+
         int actualAffectedRows = feedLikeMapper.delFeedLike(existedData);
-        assertEquals(1, actualAffectedRows);
+
+        FeedLikeVo actualFeedLikeVoAfter = feedLikeTestMapper.selFeedLikeByFeedIdAndUserId(existedData);
+
+        assertAll(
+                  () -> assertEquals(1, actualAffectedRows)
+                , () -> assertNotNull(actualFeedLikeVoBefore)
+                , () -> assertNull(actualFeedLikeVoAfter)
+        );
     }
 }

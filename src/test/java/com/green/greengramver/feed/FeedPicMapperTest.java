@@ -1,6 +1,7 @@
 package com.green.greengramver.feed;
 
 import com.green.greengramver.feed.model.FeedPicDto;
+import com.green.greengramver.feed.model.FeedPicVo;
 import org.junit.jupiter.api.Test;
 import org.mybatis.spring.MyBatisSystemException;
 import org.mybatis.spring.boot.test.autoconfigure.MybatisTest;
@@ -11,6 +12,8 @@ import org.springframework.jdbc.BadSqlGrammarException;
 import org.springframework.test.context.ActiveProfiles;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -20,6 +23,9 @@ import static org.junit.jupiter.api.Assertions.*;
 class FeedPicMapperTest {
     @Autowired
     FeedPicMapper feedPicMapper;
+
+    @Autowired
+    FeedPicTestMapper feedPicTestMapper;
 
     @Test
     void insFeedPicNoFeedIdThrowForeignKeyException() {
@@ -69,16 +75,33 @@ class FeedPicMapperTest {
     void insFeedPic() {
         String[] pics = {"a.jpg", "b.jpg", "c.jpg"};
         FeedPicDto givenParam = new FeedPicDto();
-        givenParam.setFeedId(1L);
+        givenParam.setFeedId(5L);
         givenParam.setPics(new ArrayList<>(pics.length));
         for (String pic : pics) {
             givenParam.getPics().add(pic);
         }
 
+        List<FeedPicVo> feedPicListBefore = feedPicTestMapper.selFeedPicListByFeedId(givenParam.getFeedId());
 
         int actualAffectedRows = feedPicMapper.insFeedPic(givenParam);
 
-        assertEquals(givenParam.getPics().size(), actualAffectedRows);
+        List<FeedPicVo> feedPicListAfter = feedPicTestMapper.selFeedPicListByFeedId(givenParam.getFeedId());
+
+        List<String> picList = Arrays.asList(pics);
+        for (int i = 0; i < pics.length; i++) {
+            String pic = picList.get(i);
+            System.out.printf("%s - contains: %b\n", pic, feedPicListAfter.contains(pic));
+        }
+
+        assertAll(
+                  () -> {
+
+                  }
+                , () -> assertEquals(givenParam.getPics().size(), actualAffectedRows)
+                , () -> assertEquals(0, feedPicListBefore.size())
+                , () -> assertEquals(givenParam.getPics().size(), feedPicListAfter.size())
+                , () -> feedPicListAfter.containsAll(Arrays.asList(pics))
+        );
     }
 
 }
