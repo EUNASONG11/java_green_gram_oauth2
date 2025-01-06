@@ -1,12 +1,14 @@
 package com.green.greengramver.feed.comment.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.Setter;
 
 //Data Transfer Object
 @Getter
 @Setter
+@EqualsAndHashCode
 public class FeedCommentDto {
     @JsonIgnore
     private long feedId;
