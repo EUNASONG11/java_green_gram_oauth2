@@ -27,7 +27,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
         , excludeAutoConfiguration = SecurityAutoConfiguration.class
 )
 class FeedLikeControllerTest {
-    @Autowired ObjectMapper objectMapper; //JSON사용
+    @Autowired ObjectMapper objectMapper; //JSON 사용
     @Autowired MockMvc mockMvc; //요청(보내고)-응답(받기) 처리
     @MockBean FeedLikeService feedLikeService; //가짜 객체를 만들고 빈 등록한다.
 
@@ -37,7 +37,7 @@ class FeedLikeControllerTest {
     @Test
     @DisplayName("좋아요 등록")
     void feedLikeReg() throws Exception {
-        feedLikeToggle(0);
+        feedLikeToggle(1);
     }
 
     @Test

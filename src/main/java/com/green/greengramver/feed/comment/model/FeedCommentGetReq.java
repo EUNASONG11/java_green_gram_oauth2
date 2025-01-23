@@ -13,7 +13,6 @@ import lombok.ToString;
 import java.beans.ConstructorProperties;
 
 @Getter
-@Setter
 @ToString
 @EqualsAndHashCode
 public class FeedCommentGetReq{
