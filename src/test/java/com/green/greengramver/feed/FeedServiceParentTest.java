@@ -3,9 +3,12 @@ package com.green.greengramver.feed;
 import com.green.greengramver.common.MyFileUtils;
 import com.green.greengramver.config.security.AuthenticationFacade;
 import com.green.greengramver.feed.comment.FeedCommentMapper;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
+@ExtendWith(MockitoExtension.class)
 public class FeedServiceParentTest {
     @Mock
     protected FeedMapper feedMapper;

@@ -31,7 +31,6 @@ public class FeedService {
     private final MyFileUtils myFileUtils;
     private final FeedCommentMapper feedCommentMapper;
     private final AuthenticationFacade authenticationFacade;
-    private final FeedMapper feedMapper;
 
     @Transactional
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
@@ -109,7 +108,7 @@ public class FeedService {
         List<FeedGetRes> list = new ArrayList<>(p.getSize());
         List<Long> feedIdList = new ArrayList<>(p.getSize());
         //SELECT (1) : feed + feed_pic
-        List<FeedAndPicDto> feedAndPicDtoList = feedMapper.selFeedWithPicList(p);
+        List<FeedAndPicDto> feedAndPicDtoList = mapper.selFeedWithPicList(p);
 
         FeedGetRes beforeFeedGetRes = new FeedGetRes(); // feedId 값 포함 모든 값을 0으로 세팅
         for (FeedAndPicDto feedAndPicDto : feedAndPicDtoList) {
@@ -254,7 +253,7 @@ public class FeedService {
 
     //Mybatis
     public List<FeedGetRes> getFeedList4(FeedGetReq p) {
-        List<FeedWithPicCommentDto> dtoList = feedMapper.selFeedWithPicAndCommentLimit4List(p);
+        List<FeedWithPicCommentDto> dtoList = mapper.selFeedWithPicAndCommentLimit4List(p);
         List<FeedGetRes> res = new ArrayList<>(dtoList.size());
         for (FeedWithPicCommentDto dto : dtoList) {
             res.add(new FeedGetRes(dto));

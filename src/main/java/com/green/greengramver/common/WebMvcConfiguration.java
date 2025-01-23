@@ -1,11 +1,13 @@
 package com.green.greengramver.common;
 
+import com.green.greengramver.config.jwt.TokenProvider;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.method.HandlerTypePredicate;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -16,6 +18,7 @@ import java.io.IOException;
 //@Component
 @Configuration
 public class WebMvcConfiguration implements WebMvcConfigurer {
+
     private final String uploadPath;
 
     public WebMvcConfiguration(@Value("${file.directory}") String uploadPath) {
@@ -23,26 +26,32 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
     }
 
     @Override
+    public void addCorsMappings(CorsRegistry registry) {
+        registry.addMapping("/**").allowedOrigins("*"); //CORS 허용
+    }
+
+    @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
         registry.addResourceHandler("/pic/**")
                 .addResourceLocations("file:" + uploadPath + "/");
 
-        // FrontEnd 라우터 새로고침시 화면이 나타날 수 있도록 세팅
+        //새로고침시 화면이 나타날 수 있도록 세팅
         registry.addResourceHandler("/**")
                 .addResourceLocations("classpath:/static/**")
                 .resourceChain(true)
-                .addResolver(new PathResourceResolver(){
+                .addResolver(new PathResourceResolver() {
                     @Override
                     protected Resource getResource(String resourcePath, Resource location) throws IOException {
                         Resource resource = location.createRelative(resourcePath);
 
-                        if (resource.exists() && resource.isReadable()) {
+                        if(resource.exists() && resource.isReadable()) {
                             return resource;
                         }
 
                         return new ClassPathResource("/static/index.html");
                     }
                 });
+
     }
 
     @Override
@@ -50,4 +59,7 @@ public class WebMvcConfiguration implements WebMvcConfigurer {
         // RestController의 모든 URL에 "/api" prefix를 설정
         configurer.addPathPrefix("api", HandlerTypePredicate.forAnnotation(RestController.class));
     }
+
+
+
 }
