@@ -1,8 +1,8 @@
 package com.green.greengramver.feed.like;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.green.greengramver.common.model.ResultResponse;
 import com.green.greengramver.feed.like.model.FeedLikeReq;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,8 +11,6 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.util.LinkedMultiValueMap;
-import org.springframework.util.MultiValueMap;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
@@ -33,6 +31,12 @@ class FeedLikeControllerTest {
 
     final String BASE_URL = "/api/feed/like";
     final long feedId_2 = 2L;
+    FeedLikeTestCommon common;
+
+    @BeforeEach
+    void setUp() {
+        common = new FeedLikeTestCommon(objectMapper);
+    }
 
     @Test
     @DisplayName("좋아요 등록")
@@ -48,36 +52,17 @@ class FeedLikeControllerTest {
 
 
     private void feedLikeToggle(final int result) throws Exception {
-        FeedLikeReq givenParam = getGivenParam();
+        FeedLikeReq givenParam = common.getGivenParam(feedId_2);
 
         given(feedLikeService.feedLikeToggle(givenParam)).willReturn(result);
 
-        ResultActions resultActions = mockMvc.perform(get(BASE_URL).queryParams(getParameter()));
+        ResultActions resultActions = mockMvc.perform(get(BASE_URL).queryParams(common.getParameter(feedId_2)));
 
-        String expectedResJson = getExpectedResJson(result);
+        String expectedResJson = common.getExpectedResJson(result);
         resultActions.andDo(print())
                 .andExpect(status().isOk())
                 .andExpect(content().json(expectedResJson));
 
         verify(feedLikeService).feedLikeToggle(givenParam);
-    }
-    private MultiValueMap<String, String> getParameter() {
-        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>(1);
-        queryParams.add("feedId", String.valueOf(feedId_2));
-        return queryParams;
-    }
-
-    private FeedLikeReq getGivenParam() {
-        FeedLikeReq givenParam = new FeedLikeReq();
-        givenParam.setFeedId(feedId_2);
-        return givenParam;
-    }
-
-    private String getExpectedResJson(int result) throws Exception {
-        ResultResponse expectedRes = ResultResponse.<Integer>builder()
-                .resultMessage(result == 0 ? "좋아요 취소" : "좋아요 등록")
-                .resultData(result)
-                .build();
-        return objectMapper.writeValueAsString(expectedRes);
     }
 }
