@@ -2,10 +2,7 @@ package com.green.greengramver.feed.comment;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.green.greengramver.common.model.ResultResponse;
-import com.green.greengramver.feed.comment.model.FeedCommentDto;
-import com.green.greengramver.feed.comment.model.FeedCommentGetReq;
-import com.green.greengramver.feed.comment.model.FeedCommentGetRes;
-import com.green.greengramver.feed.comment.model.FeedCommentPostReq;
+import com.green.greengramver.feed.comment.model.*;
 import com.green.greengramver.feed.like.FeedLikeController;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,9 +19,8 @@ import org.springframework.util.MultiValueMap;
 import java.util.List;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.verify;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -63,7 +59,7 @@ class FeedCommentControllerTest {
         ResultActions resultActions = mockMvc.perform(post(BASE_URL).contentType(MediaType.APPLICATION_JSON).content(paramJson));
 
         ResultResponse res = ResultResponse.<Long>builder()
-                .resultMessage("댓글 등록 완료")
+                .resultMessage("댓글 등록")
                 .resultData(feedCommentId_3)
                 .build();
 
@@ -125,5 +121,27 @@ class FeedCommentControllerTest {
                 .build();
 
         return objectMapper.writeValueAsString(expectedRes);
+    }
+
+    @Test
+    @DisplayName("피드 댓글 삭제")
+    void delFeedComment() throws Exception {
+        final int RESULT = 3;
+        FeedCommentDelReq givenParam = new FeedCommentDelReq(feedCommentId_3);
+
+        //임무 부여
+        given(feedCommentService.delFeedComment(givenParam)).willReturn(RESULT);
+
+        ResultActions resultActions = mockMvc.perform(delete(BASE_URL).queryParam("feed_comment_id", String.valueOf(feedCommentId_3)));
+
+        String expectedResJson = objectMapper.writeValueAsString(ResultResponse.<Integer>builder()
+                .resultMessage("삭제에 성공했습니다.")
+                .resultData(RESULT)
+                .build());
+        resultActions.andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(expectedResJson));
+
+        verify(feedCommentService).delFeedComment(givenParam);
     }
 }
