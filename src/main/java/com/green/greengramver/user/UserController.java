@@ -34,7 +34,7 @@ public class UserController {
     public ResultResponse<UserSignInRes> postUserSignIn(@Valid @RequestBody UserSignInReq req, HttpServletResponse response) {
         UserSignInRes res = service.postSignIn(req, response);
         return ResultResponse.<UserSignInRes>builder()
-                .resultMessage(res.getMessage())
+                .resultMessage("로그인 성공")
                 .resultData(res)
                 .build();
     }

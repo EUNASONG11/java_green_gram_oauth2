@@ -12,7 +12,7 @@ public class User extends UpdatedAt{
     @GeneratedValue(strategy = GenerationType.IDENTITY) // Auto_increment
     private Long userId;
 
-    @Column(nullable = false, length = 30) //length = 30 은 VARCHAR(30)와 동일
+    @Column(nullable = false, length = 30, unique = true) //length = 30 은 VARCHAR(30)와 동일
     private String uid;
 
     @Column(nullable = false, length = 100)

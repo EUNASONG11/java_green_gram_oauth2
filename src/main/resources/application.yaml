@@ -2,7 +2,7 @@ const:
   default-page-size: 20
 
 file:
-  directory: D:/SEA/download/greengram_ver3
+  directory: D:/SEA/download/greengram_jpa
 
 jwt:
   issuer: green@green.kr
@@ -29,7 +29,7 @@ spring:
   jpa: # JPA 사용
     database: mysql
     hibernate:
-      ddl-auto: create # entity를 서버 기동 때마다 drop 후 create 한다
+      ddl-auto: update # create는 entity를 서버 기동 때마다 drop 후 create 한다. # update 로 하면 entity가 없을 때 create 하고 기존 존재하는 entity는 컬럼을 새롭게 추가하는 것만 반영
     properties:
       hibernate:
         jdbc:
