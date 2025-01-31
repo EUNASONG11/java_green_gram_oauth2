@@ -9,6 +9,7 @@ import com.green.greengramver.config.jwt.JwtProperties;
 import com.green.greengramver.config.jwt.JwtUser;
 import com.green.greengramver.config.jwt.TokenProvider;
 import com.green.greengramver.config.security.AuthenticationFacade;
+import com.green.greengramver.entity.User;
 import com.green.greengramver.user.model.*;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -38,20 +39,26 @@ public class UserService {
     private final TokenProvider tokenProvider;
     private final CookieUtils cookieUtils;
     private final AuthenticationFacade authenticationFacade;
+    private final UserRepository userRepository;
 
     public int postUser(MultipartFile pic, UserSignUpReq p){
         String savedPicName = pic != null ? myFileUtils.makeRandomFileName(pic) : null;
         String hashedPassword = passwordEncoder.encode(p.getUpw());
-        p.setPic(savedPicName);
-        p.setUpw(hashedPassword);
 
-        int result = mapper.insUser(p);
+        User user = new User();
+        user.setNickName(p.getNickName());
+        user.setUid(p.getUid());
+        user.setUpw(hashedPassword);
+        user.setPic(savedPicName);
+
+        // int result = mapper.insUser(p);
+        userRepository.save(user);
 
         if (pic == null) {
-            return result;
+            return 1;
         }
 
-        long userId = p.getUserId();
+        long userId = user.getUserId();
         String middlePath = String.format("user/%d", userId);
         myFileUtils.makeFolders(middlePath);
 
@@ -61,7 +68,7 @@ public class UserService {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return result;
+        return 1;
     }
 
     public UserSignInRes postSignIn(UserSignInReq p, HttpServletResponse response){
