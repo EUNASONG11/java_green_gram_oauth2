@@ -11,7 +11,7 @@ import java.beans.ConstructorProperties;
 @Schema(title="피드 delete 요청")
 @EqualsAndHashCode
 public class FeedDeleteReq {
-    @Schema(description = "피드 PK", example = "2", requiredMode = Schema.RequiredMode.REQUIRED)
+    @Schema(description = "피드 PK", example = "2", name="feed_id", requiredMode = Schema.RequiredMode.REQUIRED)
     private long feedId;
     @JsonIgnore
     private long signedUserId;

@@ -5,6 +5,8 @@ import com.green.greengramver.common.exception.CustomException;
 import com.green.greengramver.common.exception.FeedErrorCode;
 import com.green.greengramver.config.security.AuthenticationFacade;
 import com.green.greengramver.entity.Feed;
+import com.green.greengramver.entity.FeedPic;
+import com.green.greengramver.entity.FeedPicIds;
 import com.green.greengramver.entity.User;
 import com.green.greengramver.feed.comment.FeedCommentMapper;
 import com.green.greengramver.feed.comment.model.FeedCommentDto;
@@ -34,6 +36,7 @@ public class FeedService {
     private final FeedCommentMapper feedCommentMapper;
     private final AuthenticationFacade authenticationFacade;
     private final FeedRepository feedRepository;
+    private final FeedPicRepository feedPicRepository;
 
     @Transactional
     public FeedPostRes postFeed(List<MultipartFile> pics, FeedPostReq p) {
@@ -41,7 +44,7 @@ public class FeedService {
         signedUser.setUserId(authenticationFacade.getSignedUserId());
 
         Feed feed = new Feed();
-        feed.setWriterUserId(signedUser);
+        feed.setWriterUser(signedUser);
         feed.setContents(p.getContents());
         feed.setLocation(p.getLocation());
 
@@ -59,7 +62,7 @@ public class FeedService {
         String middlePath = String.format("feed/%d", feedId);
         myFileUtils.makeFolders(middlePath);
 
-        //랜덤 파일명 저장용 >> feed_pics 테이블에 저장할 때 사용
+//        //랜덤 파일명 저장용 >> feed_pics 테이블에 저장할 때 사용
         List<String> picNameList  = new ArrayList<>(pics.size());
         for (MultipartFile pic : pics) {
             //각 파일 랜덤파일명 만들기
@@ -67,6 +70,16 @@ public class FeedService {
             picNameList.add(savedPicName);
             String filePath = String.format("%s/%s", middlePath, savedPicName);
             try {
+                FeedPicIds ids = new FeedPicIds();
+                ids.setFeedId(feedId);
+                ids.setPic(savedPicName);
+
+                FeedPic feedPic = new FeedPic();
+                feedPic.setFeedPicIds(ids);
+                feedPic.setFeed(feed);
+
+                feedPicRepository.save(feedPic);
+
                 myFileUtils.transferTo(pic, filePath);
             } catch (IOException e) {
                 //폴더 삭제 처리
@@ -76,9 +89,9 @@ public class FeedService {
             }
 
         }
-        FeedPicDto feedPicDto = new FeedPicDto();
-        feedPicDto.setFeedId(feedId);
-        feedPicDto.setPics(picNameList);
+//        FeedPicDto feedPicDto = new FeedPicDto();
+//        feedPicDto.setFeedId(feedId);
+//        feedPicDto.setPics(picNameList);
 
         //int resultPis = feedPicMapper.insFeedPic(feedPicDto);
 
@@ -87,6 +100,7 @@ public class FeedService {
                           .pics(picNameList)
                           .build();
     }
+    // JPA에는 UPDATE가 없음
 
     // N+1 이슈 발생 (만약 피드가 20개면 총 41번의 select가 발생)
     public List<FeedGetRes> getFeedList(FeedGetReq p) {
@@ -277,16 +291,34 @@ public class FeedService {
 
     @Transactional
     public int deleteFeed(FeedDeleteReq p) {
-        p.setSignedUserId(authenticationFacade.getSignedUserId());
-        //피드 사진 삭제 (폴더 삭제)
-        String deletePath = String.format("%s/feed/%d", myFileUtils.getUploadPath(), p.getFeedId());
-        myFileUtils.deleteFolder(deletePath, true);
+        User SignedUser = new User();
+        SignedUser.setUserId(authenticationFacade.getSignedUserId());
 
-        //피드 댓글, 좋아요 삭제
-        int affectedRows = mapper.delFeedLikeAndFeedCommentAndFeedPic(p);
-        log.info("affectedRows: {}", affectedRows);
+//        Feed feed = feedRepository.findByFeedIdAndWriterUser(p.getFeedId(), SignedUser)
+//                                  .orElseThrow(() -> new CustomException(FeedErrorCode.FAIL_TO_REG));
+//        feedRepository.delete(feed);
+
+        User user = new User();
+        user.setUserId(authenticationFacade.getSignedUserId());
+
+        //int affectedRows = feedRepository.deleteByFeedIdAndWriterUser(p.getFeedId(), user);
+        int affectedRows = feedRepository.deleteFeed(p.getFeedId(), authenticationFacade.getSignedUserId());
+
+        if(affectedRows == 0) {
+            throw new CustomException(FeedErrorCode.FAIL_TO_REG);
+        }
+
+
+//        p.setSignedUserId(authenticationFacade.getSignedUserId());
+//        //피드 사진 삭제 (폴더 삭제)
+//        String deletePath = String.format("%s/feed/%d", myFileUtils.getUploadPath(), p.getFeedId());
+//        myFileUtils.deleteFolder(deletePath, true);
+//
+//        //피드 댓글, 좋아요 삭제
+//        int affectedRows = mapper.delFeedLikeAndFeedCommentAndFeedPic(p);
+//        log.info("affectedRows: {}", affectedRows);
 
         //피드 삭제
-        return mapper.delFeed(p);
+        return 1;
     }
 }
