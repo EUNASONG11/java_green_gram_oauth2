@@ -18,7 +18,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
     //JPQL(Java Persistence Query Language)
     @Modifying //@Modifying이 있어야 delete or update JPQL, 리턴타입은 void or int 만 가능
     @Query("delete from Feed f where f.feedId=:feedId AND f.writerUser.userId=:writerUserId")
-    int deleteFeed(@Param("feedId") Long feedId, @Param("writerUserId") Long writerUserId);
+    int deleteFeed(Long feedId, Long writerUserId);
 
     /*
     Feed(대문자로 시작 - class명으로 작성해야 함)

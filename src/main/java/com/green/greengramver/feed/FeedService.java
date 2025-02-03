@@ -298,10 +298,7 @@ public class FeedService {
 //                                  .orElseThrow(() -> new CustomException(FeedErrorCode.FAIL_TO_REG));
 //        feedRepository.delete(feed);
 
-        User user = new User();
-        user.setUserId(authenticationFacade.getSignedUserId());
-
-        //int affectedRows = feedRepository.deleteByFeedIdAndWriterUser(p.getFeedId(), user);
+        //int affectedRows = feedRepository.deleteByFeedIdAndWriterUser(p.getFeedId(), SignedUser);
         int affectedRows = feedRepository.deleteFeed(p.getFeedId(), authenticationFacade.getSignedUserId());
 
         if(affectedRows == 0) {
