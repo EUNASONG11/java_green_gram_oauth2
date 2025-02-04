@@ -13,15 +13,9 @@ import java.beans.ConstructorProperties;
 public class FeedDeleteReq {
     @Schema(description = "피드 PK", example = "2", name="feed_id", requiredMode = Schema.RequiredMode.REQUIRED)
     private long feedId;
-    @JsonIgnore
-    private long signedUserId;
 
     @ConstructorProperties({"feed_id"})
     public FeedDeleteReq(long feedId) {
         this.feedId = feedId;
-    }
-
-    public void setSignedUserId(long signedUserId) {
-        this.signedUserId = signedUserId;
     }
 }

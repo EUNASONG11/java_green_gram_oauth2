@@ -22,6 +22,11 @@ public interface FeedRepository extends JpaRepository<Feed, Long> {
 
     /*
     Feed(대문자로 시작 - class명으로 작성해야 함)
-    :feedId 는 #{feedId}랑 같은 역할
+    :feedId 는 #{feedId}랑 같은 역할, 멤버필드명 작성
+
+    feedId = 1, writerUserid = 2 라는 가정 하에 SQL문이 만들어진다.
+    DELETE FROM feed f
+     WHERE f.feed_id = 1
+       AND f.user_id = 2
      */
 }

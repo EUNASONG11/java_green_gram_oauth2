@@ -12,7 +12,7 @@ public class UserFollow extends CreatedAt {
     private UserFollowIds userFollowIds;
 
     @ManyToOne
-    @MapsId("fromUserId")
+    @MapsId("fromUserId") //UserFollowIds class에 있는 필드와 연결
     @JoinColumn(name = "from_user_id")
     private User fromUser;
 

@@ -307,9 +307,9 @@ public class FeedService {
 
 
 //        p.setSignedUserId(authenticationFacade.getSignedUserId());
-//        //피드 사진 삭제 (폴더 삭제)
-//        String deletePath = String.format("%s/feed/%d", myFileUtils.getUploadPath(), p.getFeedId());
-//        myFileUtils.deleteFolder(deletePath, true);
+        //피드 사진 삭제 (폴더 삭제)
+        String deletePath = String.format("%s/feed/%d", myFileUtils.getUploadPath(), p.getFeedId());
+        myFileUtils.deleteFolder(deletePath, true);
 //
 //        //피드 댓글, 좋아요 삭제
 //        int affectedRows = mapper.delFeedLikeAndFeedCommentAndFeedPic(p);
