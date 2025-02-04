@@ -130,7 +130,7 @@ class FeedCommentControllerTest {
         FeedCommentDelReq givenParam = new FeedCommentDelReq(feedCommentId_3);
 
         //임무 부여
-        given(feedCommentService.delFeedComment(givenParam)).willReturn(RESULT);
+        //given(feedCommentService.delFeedComment(givenParam)).willReturn(RESULT);
 
         ResultActions resultActions = mockMvc.perform(delete(BASE_URL).queryParam("feed_comment_id", String.valueOf(feedCommentId_3)));
 

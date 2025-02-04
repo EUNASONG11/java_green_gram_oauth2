@@ -57,14 +57,10 @@ public class FeedCommentController {
     //FE - data 전달방식 : Query-String
     public ResultResponse<Integer> delFeedComment (@ParameterObject @ModelAttribute FeedCommentDelReq p) {
         log.info("FeedCommentController > delFeedComment > p: {}", p);
-        int result = service.delFeedComment(p);
-        String message = "삭제에 성공했습니다.";
-        if (result == 0) {
-            message = "삭제에 실패했습니다.";
-        }
+        service.delFeedComment(p);
         return ResultResponse.<Integer>builder()
-                .resultMessage(message)
-                .resultData(result)
+                .resultMessage("댓글 삭제가 완료되었습니다.")
+                .resultData(1)
                 .build();
     }
 }

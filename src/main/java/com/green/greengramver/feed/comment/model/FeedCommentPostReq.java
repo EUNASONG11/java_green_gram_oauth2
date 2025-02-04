@@ -13,11 +13,7 @@ import lombok.Setter;
 public class FeedCommentPostReq {
     @Schema(title="피드 PK", example = "1", requiredMode = Schema.RequiredMode.REQUIRED)
     private long feedId;
-    @JsonIgnore
-    private long userId;
+
     @Schema(title="댓글 내용", example = "댓글입니다", requiredMode = Schema.RequiredMode.REQUIRED)
     private String comment;
-
-    @JsonIgnore
-    private long feedCommentId;
 }
