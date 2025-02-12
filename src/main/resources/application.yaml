@@ -35,7 +35,7 @@ spring:
         jdbc:
           batch_size: 50
         format_sql: true # 로그 찍을 때 보기 편하게 포맷팅
-        order_updates: true # JPA Batch 작업 활성화
+        order_updates: true
     show-sql: true # JPA가 만든 쿼리문 로그에 출력
 
   servlet:
