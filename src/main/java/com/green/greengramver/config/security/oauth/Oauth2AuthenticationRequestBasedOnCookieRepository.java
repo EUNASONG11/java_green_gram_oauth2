@@ -25,7 +25,7 @@ public class Oauth2AuthenticationRequestBasedOnCookieRepository implements Autho
     @Override
     public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request, HttpServletResponse response) {
         if (authorizationRequest == null) {
-            this.removeAuthorizationRequest(response);
+            this.removeAuthorizationCookies(response);
         }
         cookieUtils.setCookie(response
                             , globalOauth2.getAuthorizationRequestCookieName()
@@ -47,7 +47,7 @@ public class Oauth2AuthenticationRequestBasedOnCookieRepository implements Autho
         return this.loadAuthorizationRequest(request);
     }
 
-    private void removeAuthorizationRequest(HttpServletResponse response) {
+    public void removeAuthorizationCookies(HttpServletResponse response) {
         cookieUtils.deleteCookie(response, globalOauth2.getAuthorizationRequestCookieName());
         cookieUtils.deleteCookie(response, globalOauth2.getRedirectUriParamCookieName());
     }

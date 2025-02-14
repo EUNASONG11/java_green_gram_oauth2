@@ -32,6 +32,6 @@ public class User extends UpdatedAt{
     @Column(length = 30)
     private String nickName;
 
-    @Column(length = 50)
+    @Column(length = 255)
     private String pic;
 }

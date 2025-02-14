@@ -18,6 +18,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 @Slf4j
@@ -66,13 +67,11 @@ public class MyOauth2UserService extends DefaultOAuth2UserService {
             userRepository.save(user);
         }
 
-        JwtUser jwtUser = new JwtUser();
-        jwtUser.setSignedUserId(user.getUserId());
-        jwtUser.setRoles(new ArrayList<>(1));
-        jwtUser.getRoles().add("ROLE_USER");
+        OAuth2JwtUser oAuth2JwtUser = new OAuth2JwtUser(user.getNickName(), user.getPic(), user.getUserId(), Arrays.asList("ROLE_USER"));
+
 
         MyUserDetails myUserDetails = new MyUserDetails();
-        myUserDetails.setJwtUser(jwtUser);
+        myUserDetails.setJwtUser(oAuth2JwtUser);
 
         return myUserDetails;
     }

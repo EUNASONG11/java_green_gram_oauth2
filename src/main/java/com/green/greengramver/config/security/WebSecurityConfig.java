@@ -1,9 +1,11 @@
 package com.green.greengramver.config.security;
 // Spring Security 세팅
 
+import com.green.greengramver.common.GlobalOauth2;
 import com.green.greengramver.config.jwt.JwtAuthenticationEntryPoint;
 import com.green.greengramver.config.jwt.TokenAuthenticationFilter;
 import com.green.greengramver.config.jwt.TokenProvider;
+import com.green.greengramver.config.security.oauth.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -11,6 +13,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
@@ -20,6 +23,15 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class WebSecurityConfig {
     private final TokenProvider tokenProvider;
     private final JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
+
+    //OAuth2
+    private final Oauth2AuthenticationCheckRedirectUriFilter oauth2AuthenticationCheckRedirectUriFilter;
+    private final Oauth2AuthenticationRequestBasedOnCookieRepository repository;
+    private final Oauth2AuthenticationSuccessHandler oauth2AuthenticationSuccessHandler;
+    private final Oauth2AuthenticationFailureHandler oauth2AuthenticationFailureHandler;
+    private final MyOauth2UserService myOauth2UserService;
+    private final GlobalOauth2 globalOauth2;
+
     // Spring Security 기능 비활성화(Spring Security 가 관여하지 않았으면 하는 부분)
 //    @Bean
 //    public WebSecurityCustomizer webSecurityCustomizer() {
@@ -38,6 +50,13 @@ public class WebSecurityConfig {
                                                  .anyRequest().permitAll())// 나머지 요청은 모두 허용
                 .exceptionHandling(e -> e.authenticationEntryPoint(jwtAuthenticationEntryPoint))
                 .addFilterBefore(new TokenAuthenticationFilter(tokenProvider), UsernamePasswordAuthenticationFilter.class)
+                .oauth2Login( oauth2 -> oauth2.authorizationEndpoint( auth -> auth.baseUri(globalOauth2.getBaseUri())
+                                                                                  .authorizationRequestRepository(repository))
+                                              .redirectionEndpoint(redirection -> redirection.baseUri("/*/oauth2/code/*")) // BE가 사용하는 redirect Uri, 플랫폼마다 설정을 할 예정
+                                              .userInfoEndpoint(userInfo -> userInfo.userService(myOauth2UserService))
+                                              .successHandler(oauth2AuthenticationSuccessHandler)
+                                              .failureHandler(oauth2AuthenticationFailureHandler))
+                .addFilterBefore(oauth2AuthenticationCheckRedirectUriFilter, OAuth2AuthorizationRequestRedirectFilter.class)
                 .build();
     }
 
